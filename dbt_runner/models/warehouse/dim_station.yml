@@ -1,0 +1,23 @@
+version: 2
+
+models:
+  - name: dim_station
+    description: "Dimension table stasiun dengan SCD Type 2, tracking perubahan atribut dari waktu ke waktu"
+    columns:
+      - name: station_sk
+        description: "Surrogate key unik per versi stasiun"
+        tests:
+          - unique
+          - not_null
+
+      - name: station_id
+        tests:
+          - not_null
+
+      - name: valid_from
+        tests:
+          - not_null
+
+      - name: is_current
+        tests:
+          - not_null

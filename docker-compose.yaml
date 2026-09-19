@@ -1,0 +1,110 @@
+version: '3.8'
+
+x-airflow-common:
+  &airflow-common
+  build: .
+  env_file:
+    - .env
+  environment:
+    &airflow-common-env
+    AIRFLOW__CORE__LOAD_EXAMPLES: 'False'
+    AIRFLOW__CORE__EXECUTOR: SequentialExecutor
+    AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: sqlite:////opt/airflow/airflow.db
+    _AIRFLOW_WWW_USER_CREATE: 'True'
+    _AIRFLOW_WWW_USER_USERNAME: admin
+    _AIRFLOW_WWW_USER_PASSWORD: admin
+    PYTHONUNBUFFERED: '1'
+    OUTPUT_DIR: ${OUTPUT_DIR}
+    OUTPUT_STATION_INFO: ${OUTPUT_STATION_INFO}
+    GCS_BUCKET_NAME: ${GCS_BUCKET_NAME}
+    GCS_FOLDER_PREFIX: ${GCS_FOLDER_PREFIX}
+    DATASET_STAGING: ${DATASET_STAGING}
+    DATASET_INTERMEDIATE: ${DATASET_INTERMEDIATE}
+    DATASET_WAREHOUSE: ${DATASET_WAREHOUSE}
+    PROJECT_ID: ${PROJECT_ID}
+    TOPIC_ID: ${TOPIC_ID}
+    SUBSCRIPTION_ID: ${SUBSCRIPTION_ID}
+    STATION_STATUS_URL: ${STATION_STATUS_URL}
+    AIRFLOW_CONN_SLACK_DEFAULT: ${AIRFLOW_CONN_SLACK_DEFAULT}
+    AIRFLOW_CONN_GOOGLE_CLOUD_DEFAULT: ${AIRFLOW_CONN_GOOGLE_CLOUD_DEFAULT}
+    SLACK_WEBHOOK_URL: ${SLACK_WEBHOOK_URL}
+  volumes:
+    - ./output:/opt/airflow/output
+    - ./dags:/opt/airflow/dags
+    - ./scripts:/opt/airflow/scripts
+    - ./credentials:/opt/airflow/credentials
+    - airflow_data:/opt/airflow
+    - ./dbt_runner:/opt/airflow/dbt_runner
+  user: "${AIRFLOW_UID:-50000}:0"
+
+services:
+  airflow-init:
+    <<: *airflow-common
+    container_name: citibike_airflow_init
+    entrypoint: /bin/bash
+    command: 
+      - -c
+      - |
+        airflow db migrate
+        airflow users create \
+          --username admin \
+          --firstname Admin \
+          --lastname User \
+          --role Admin \
+          --email admin@example.com \
+          --password admin || true
+    environment:
+      <<: *airflow-common-env
+      _AIRFLOW_DB_MIGRATE: 'true'
+
+  airflow-webserver:
+    <<: *airflow-common
+    container_name: citibike_airflow_webserver
+    command: webserver
+    ports:
+      - "8080:8080"
+    depends_on:
+      airflow-init:
+        condition: service_completed_successfully
+    restart: always
+
+  airflow-scheduler:
+    <<: *airflow-common
+    container_name: citibike_airflow_scheduler
+    command: scheduler
+    depends_on:
+      airflow-init:
+        condition: service_completed_successfully
+    restart: always
+      
+  pubsub-init:
+    <<: *airflow-common
+    container_name: citibike_pubsub_init
+    entrypoint: ""
+    command: python /opt/airflow/scripts/streaming/init_pubsub.py
+    depends_on:
+      airflow-init:
+        condition: service_completed_successfully
+
+  gbfs-publisher:
+    <<: *airflow-common
+    container_name: citibike_gbfs_publisher
+    entrypoint: ""
+    command: python /opt/airflow/scripts/streaming/publisher.py
+    depends_on:
+      pubsub-init:
+        condition: service_completed_successfully
+    restart: unless-stopped
+
+  gbfs-consumer:
+    <<: *airflow-common
+    container_name: citibike_gbfs_consumer
+    entrypoint: ""
+    command: python /opt/airflow/scripts/streaming/consumer.py
+    depends_on:
+      pubsub-init:
+        condition: service_completed_successfully
+    restart: unless-stopped
+
+volumes:
+  airflow_data:

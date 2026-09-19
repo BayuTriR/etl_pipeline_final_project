@@ -1,0 +1,13 @@
+.venv-dbt/
+backup_code/
+credentials/*
+!credentials/.gitkeep
+logs/
+output/
+dbt_runner/target/
+dbt_runner/logs/
+dbt_runner/dbt_packages/
+__pycache__/
+.env
+*.pyc
+.DS_Store

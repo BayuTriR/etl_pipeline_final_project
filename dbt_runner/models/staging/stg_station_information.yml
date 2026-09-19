@@ -1,0 +1,26 @@
+version: 2
+
+models:
+  - name: stg_station_information
+    description: "Model staging GBFS station information, passthrough dari source dengan minimal transformasi"
+    columns:
+      - name: station_id
+        description: "ID unik stasiun dari GBFS"
+        tests:
+          - not_null
+
+      - name: station_name
+        tests:
+          - not_null
+
+      - name: lat
+        tests:
+          - not_null
+
+      - name: lon
+        tests:
+          - not_null
+
+      - name: capacity
+        tests:
+          - not_null

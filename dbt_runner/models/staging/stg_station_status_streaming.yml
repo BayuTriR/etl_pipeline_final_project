@@ -1,0 +1,34 @@
+version: 2
+
+models:
+  - name: stg_station_status_streaming
+    description: "Staging data status stasiun real-time dari GBFS"
+    columns:
+      - name: station_id
+        tests:
+          - not_null
+
+      - name: ingestion_at
+        tests:
+          - not_null
+
+      - name: is_installed
+        tests:
+          - accepted_values:
+              arguments:
+                values: [0, 1]
+                quote: false
+
+      - name: is_renting
+        tests:
+          - accepted_values:
+              arguments:
+                values: [0, 1]
+                quote: false
+
+      - name: is_returning
+        tests:
+          - accepted_values:
+              arguments:
+                values: [0, 1]
+                quote: false

@@ -1,0 +1,16 @@
+version: 2
+
+models:
+  - name: fct_station_status_current
+    description: "Snapshot kondisi TERKINI tiap stasiun (1 baris per stasiun), sudah di-enrich dengan dim_station"
+    columns:
+      - name: station_id
+        tests:
+          - not_null
+          - unique
+          - relationships:
+              arguments:
+                to: ref('dim_station')
+                field: station_id
+                config:
+                  severity: warn

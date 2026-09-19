@@ -1,0 +1,34 @@
+version: 2
+
+models:
+  - name: stg_citibike_trips
+    description: "Model staging Citibike trips, hasil dedup dari tabel bronze"
+    columns:
+      - name: ride_id
+        description: "ID unik trip dari Citibike"
+        tests:
+          - not_null
+
+      - name: started_at
+        description: "Waktu mulai trip"
+        tests:
+          - not_null
+
+      - name: ended_at
+        description: "Waktu selesai trip"
+        tests:
+          - not_null
+
+      - name: rideable_type
+        description: "Jenis sepeda"
+        tests:
+          - accepted_values:
+              arguments:
+                values: ['classic_bike', 'electric_bike']
+
+      - name: member_casual
+        description: "Tipe pengguna"
+        tests:
+          - accepted_values:
+              arguments:
+                values: ['member', 'casual']

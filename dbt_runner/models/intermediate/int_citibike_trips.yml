@@ -1,0 +1,47 @@
+version: 2
+
+models:
+  - name: int_citibike_trips
+    description: "Model intermediate: hitung durasi trip dan derivasi kolom waktu (tanggal, jam, hari, weekend, time_of_day). Tidak melakukan enrichment stasiun atau flagging kualitas data - itu dilakukan di fct_citibike_trips_enriched."
+    columns:
+      - name: ride_id
+        tests:
+          - not_null
+
+      - name: trip_duration_seconds
+        description: "Durasi trip dalam detik, hasil TIMESTAMP_DIFF"
+        tests:
+          - not_null
+
+      - name: trip_duration_minutes
+        description: "Durasi trip dalam menit, dibulatkan 2 desimal"
+        tests:
+          - not_null
+
+      - name: started_date
+        tests:
+          - not_null
+
+      - name: started_hour
+        tests:
+          - not_null
+
+      - name: is_weekend
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: [true, false]
+                quote: false
+
+      - name: time_of_day
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  - 'Late Night'
+                  - 'Morning'
+                  - 'Afternoon'
+                  - 'Evening'
+                  - 'Night'

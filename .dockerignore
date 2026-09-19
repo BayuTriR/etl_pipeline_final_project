@@ -1,0 +1,16 @@
+.venv-dbt/
+.git/
+.gitignore
+backup_code/
+credentials/
+logs/
+output/
+dbt_runner/target/
+dbt_runner/logs/
+dbt_runner/dbt_packages/
+__pycache__/
+.env
+*.pyc
+.DS_Store
+README.md
+docs/

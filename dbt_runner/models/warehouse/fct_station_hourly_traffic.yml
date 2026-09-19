@@ -1,0 +1,23 @@
+version: 2
+
+models:
+  - name: fct_station_hourly_traffic
+    description: "Aggregate fact table: ringkasan trip per jam, per stasiun, per tipe member dan tipe sepeda"
+    columns:
+      - name: started_date
+        tests:
+          - not_null
+
+      - name: start_station_id
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_station')
+                field: short_name
+                config:
+                  severity: warn
+
+      - name: total_trips
+        tests:
+          - not_null

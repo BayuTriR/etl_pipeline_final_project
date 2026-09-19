@@ -1,0 +1,13 @@
+version: 2
+
+sources:
+  - name: batch_staging
+    database: jcdeah-009
+    schema: jcdeah_009_bayutrir_staging
+    tables:
+      - name: citibike_trips
+        description: "Staging table for Citibike data"
+      - name: gbfs_station_information
+        description: "Staging table for GBFS station information"
+      - name: station_status_streaming
+        description: "Staging table for GBFS station status"

@@ -1,0 +1,40 @@
+version: 2
+
+models:
+  - name: fct_citibike_trips_enriched
+    description: "Fact table trip Citibike, hasil join ke dim_station dengan point-in-time SCD, lengkap dengan data_quality_flag final"
+    columns:
+      - name: ride_id
+        tests:
+          - not_null
+
+      - name: data_quality_flag
+        tests:
+          - not_null
+          - accepted_values:
+              arguments: 
+                values:
+                - 'valid'
+                - 'missing_start_data'
+                - 'missing_end_data'
+                - 'negative_duration'
+                - 'zero_duration'
+                - 'excessive_duration'
+
+      - name: start_station_id
+        tests:
+          - relationships:
+              arguments:
+                to: ref('dim_station')
+                field: short_name
+                config:
+                  severity: warn
+
+      - name: end_station_id
+        tests:
+          - relationships:
+              arguments:
+                to: ref('dim_station')
+                field: short_name
+                config:
+                  severity: warn
