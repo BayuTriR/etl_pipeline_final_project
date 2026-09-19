@@ -162,7 +162,7 @@ Panduan lengkap dari clone repository sampai memastikan seluruh pipeline (batch,
 ### 1. Clone repository
 
 ```bash
-git clone <url-repository-ini>
+git clone https://github.com/BayuTriR/etl_pipeline_final_project.git
 cd Final_Project
 ```
 
