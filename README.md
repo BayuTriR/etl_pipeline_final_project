@@ -87,7 +87,7 @@ Sumber data: [Citibike System Data (Jersey City)](https://s3.amazonaws.com/tripd
 
 ## Station Information
 
-Sumber data: GBFS `station_information.json` (operator Lyft/Citibike).
+Sumber data: [GBFS Station Information](https://gbfs.lyft.com/gbfs/2.3/bkn/en/station_information.json) (operator Lyft/Citibike).
 
 - Data ini adalah snapshot atribut stasiun (nama, lokasi, kapasitas) — berubah jarang, sehingga cocok di-fetch secara periodik, bukan streaming per detik.
 - Load: `WRITE_APPEND` (bukan `WRITE_TRUNCATE`) — histori snapshot **wajib** disimpan agar model SCD di layer dbt bisa mendeteksi perubahan dari waktu ke waktu.
@@ -95,7 +95,7 @@ Sumber data: GBFS `station_information.json` (operator Lyft/Citibike).
 
 ## Station Status
 
-Sumber data: GBFS `station_status.json` — berbeda dari `station_information`, data ini berubah tiap ada peminjaman/pengembalian sepeda sehingga cocok dipantau lebih sering.
+Sumber data: [GBFS Station Status](https://gbfs.lyft.com/gbfs/2.3/bkn/en/station_status.json) — berbeda dari `station_information`, data ini berubah tiap ada peminjaman/pengembalian sepeda sehingga cocok dipantau lebih sering.
 
 Pola yang digunakan adalah **micro-batch melalui Pub/Sub**, bukan streaming murni:
 
