@@ -25,12 +25,14 @@ Pipeline data engineering end-to-end untuk data trip Citibike (Jersey City) dan 
 
 | Komponen | Tools |
 |---|---|
-| Orchestration | Apache Airflow 2.9.2 (Docker) |
-| Extract & Transform | Python, PySpark 3.5.3 |
-| Messaging (streaming) | Google Cloud Pub/Sub |
+| Cloud | Google Cloud Platform |
+| Containerization | Docker, Docker Compose |
+| Orchestration | Apache Airflow |
 | Data Warehouse | Google BigQuery |
-| Transformation | dbt-core 1.12.4, dbt-bigquery |
-| Storage staging | Google Cloud Storage |
+| Processing | Python, Spark |
+| Messaging (Streaming) | Google Cloud PubSub |
+| Object Storage | Google Cloud Storage |
+| Transformation Tools | dbt, PySpark |
 | Alerting | Slack (Incoming Webhook) |
 | Dashboard | Looker Studio |
 | Runtime | Java Temurin 21 (untuk PySpark), Python 3.11 |

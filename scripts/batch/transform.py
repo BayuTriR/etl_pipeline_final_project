@@ -13,7 +13,7 @@ def transform_citibike_data(local_csv_path, batch_month):
         .option("inferSchema", "true") \
         .csv(local_csv_path)
 
-    # 3. Transformasi Data (Cleaning, Konversi Tipe, Hitung Durasi)
+    # 3. Transformasi Data
     print("Melakukan transformasi data...")
     df_transformed = df_raw \
         .withColumn("started_at", to_timestamp(col("started_at"))) \
@@ -65,10 +65,8 @@ def transform_gbfs_stations(local_json_path):
         .option("multiline", "true") \
         .json(local_json_path)
 
-    # 3. Transformasi Data (Ekstrak array stations, casting tipe data, dan cleaning)
+    # 3. Transformasi Data
     print("Melakukan transformasi data GBFS stations...")
-
-    # Ekstrak array dari path data.stations
     df_stations = df_raw.select(explode(col("data.stations")).alias("station"))
 
     df_transformed = df_stations \

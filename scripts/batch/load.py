@@ -67,7 +67,6 @@ def upload_gbfs_to_gcs_and_bq(df_transformed, cfg):
 
     local_file_path = os.path.join(cfg["output_station_info"], "station_information.csv")
     
-    # Konversi ke pandas untuk disimpan sebagai CSV (atau bisa langsung parquet/ndjson jika preferensi lain)
     pdf = df_transformed.toPandas()
     pdf.to_csv(local_file_path, index=False)
 
@@ -77,7 +76,7 @@ def upload_gbfs_to_gcs_and_bq(df_transformed, cfg):
     blob.upload_from_filename(local_file_path)
     print(f"Berhasil mengunggah GBFS ke GCS: gs://{cfg['gcs_bucket_name']}/{gcs_blob_path}")
 
-    # Load ke BigQuery (biasanya menggunakan WRITE_TRUNCATE karena ini data master/snapshot stasiun terbaru)
+    # Load ke BigQuery 
     table_name = "gbfs_station_information"
     table_id = f"{cfg['project_id']}.{cfg['dataset_staging']}.{table_name}"
     gcs_uri = f"gs://{cfg['gcs_bucket_name']}/{gcs_blob_path}"
